@@ -107,8 +107,8 @@ exports.UpdateBootcamp = asyncHandler(async (req, res, next) => {
   res.status(201).json({ success: true, data: bootcamp });
 });
 
-// @ Desc       Get all bootcamps
-// @ route      GET /api/v1/bootcamps/:id
+// @ Desc       Delete bootcamp
+// @ route      DELETE /api/v1/bootcamps/:id
 // @ access     private
 exports.DeleteBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findById(req.params.id);
@@ -119,6 +119,25 @@ exports.DeleteBootcamp = asyncHandler(async (req, res, next) => {
   }
   bootcamp.remove();
   res.status(201).json({ success: true, data: {} });
+});
+
+// @ Desc       Upload photo for bootcamp
+// @ route      PUT /api/v1/bootcamps/:id/photo
+// @ access     private
+exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamp.findById(req.params.id);
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`Bootcamp not found with the id ${req.params.id}`, 404)
+    );
+  }
+  if (!req.files) {
+    return next(new ErrorResponse(`Please upload a file`, 400));
+  }
+  //make sure the image is photo
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Please upload an image file`), 404);
+  }
 });
 
 // @desc      Get bootcamps within a radius
